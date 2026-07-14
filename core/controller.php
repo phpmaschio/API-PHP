@@ -6,12 +6,12 @@ class controller{
 	}
 
 	public function loadView($viewName, $viewData = array()){
-		extract($viewData);
+		$data = $viewData;
 		include 'views/'.$viewName.'.php';
 	}
 
 	public function loadTemplate($viewName, $viewData = array()){
-		extract($viewData);
+		$data = $viewData;
 		include 'template/template.php';
 	}
 

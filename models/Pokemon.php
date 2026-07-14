@@ -19,6 +19,27 @@ class Pokemon extends model{
 		return $retorno;
 	}
 
+	public function search($termo){
+		$retorno = array();
+
+		$sql = "SELECT *
+		          FROM tab_pokemon
+		         WHERE nome  LIKE :termo
+		            OR tipo  LIKE :termo
+		            OR tipo2 LIKE :termo
+		         ORDER BY numero";
+
+		$sql = $this->db->prepare($sql);
+		$sql->bindValue(':termo', '%'.$termo.'%');
+		$sql->execute();
+
+		if($sql->rowCount() > 0){
+			$retorno = $sql->fetchAll(\PDO::FETCH_ASSOC);
+		}
+
+		return $retorno;
+	}
+
 	public function getAll(){
 		$retorno = array();
 

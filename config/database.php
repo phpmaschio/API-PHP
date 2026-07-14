@@ -10,6 +10,8 @@ try{
 
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }catch(PDOException $e){
-	echo "erro bd: ".$e->getMessage();
+	error_log('Erro de conexao com banco: '.$e->getMessage());
+	http_response_code(500);
+	echo json_encode(array('status' => false, 'titulo' => 'Erro interno do servidor'));
 	exit;
 }

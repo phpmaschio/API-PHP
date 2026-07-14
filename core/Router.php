@@ -14,11 +14,16 @@ class Router{
 			if(is_callable($callback)){
 				call_user_func($callback);
 			}else{
-				echo 'Erro: Callback não função';
+				http_response_code(500);
+				echo json_encode(array('status' => false, 'titulo' => 'Rota inválida'));
 			}
 		}else{
-			header("Location: ".BASE_URL.'404');
-			exit;
+			http_response_code(404);
+			if(array_key_exists('/404', $this->routes)){
+				call_user_func($this->routes['/404']);
+			}else{
+				echo json_encode(array('status' => false, 'titulo' => 'Página não encontrada'));
+			}
 		}
 	}
 }

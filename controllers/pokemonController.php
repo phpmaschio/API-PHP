@@ -13,7 +13,7 @@ class pokemonController extends controller{
 	}
 
 	public function lista(){
-		//$api = new Api();
+		$api = new Api();
 
 		$pokemon = new Pokemon();
 		$retorno = $pokemon->getAll();
@@ -26,12 +26,12 @@ class pokemonController extends controller{
 	}
 
 	public function get(){
-		//$api = new Api();
+		$api = new Api();
 
-		if(isset($_GET['numero']) && !empty($_GET['numero'])){
-			$numero = $_GET['numero'];
+		if(isset($_GET['numero']) && !empty($_GET['numero']) && filter_var($_GET['numero'], FILTER_VALIDATE_INT) !== false){
+			$numero = (int) $_GET['numero'];
 		}else{
-			output_header(false,'parametros não enviados');
+			output_header(false,'parametros não enviados ou inválidos');
 		}
 
 		$pokemon = new Pokemon();
@@ -45,34 +45,15 @@ class pokemonController extends controller{
 	}
 
 	public function search(){
-		//$api = new Api();
+		$api = new Api();
 
 		$search = null;
 		if(isset($_GET['search']) && !empty($_GET['search'])){
-			$search = $_GET['search'];
+			$search = trim($_GET['search']);
 		}
 
 		$pokemon = new Pokemon();
-		$dados = $pokemon->getAll();
-
-		if(count($dados) == 0){
-			output_header(false, 'Nenhum dado encontrado');
-		}
-
-		$retorno = array();
-		if(!empty($search)){
-			foreach($dados as $item){
-				if(
-					(strpos(strtolower($item['nome']),strtolower($search)) !== false)
-					or (strpos(strtolower($item['tipo']),strtolower($search)) !== false)
-					or (strpos(strtolower($item['tipo2']),strtolower($search)) !== false)
-					){
-					$retorno[] = $item;
-				}
-			}
-		}else{
-			$retorno = $dados;
-		}
+		$retorno = !empty($search) ? $pokemon->search($search) : $pokemon->getAll();
 
 		if(count($retorno)==0){
 			output_header(false, 'Nenhum dado encontrado para o termo pesquisado');
@@ -82,7 +63,7 @@ class pokemonController extends controller{
 	}
 
 	public function tipo(){
-		//$api = new Api();
+		$api = new Api();
 
 		$pokemon = new Pokemon();
 		$retorno = $pokemon->getTipo();

@@ -1,5 +1,14 @@
 <?php
-session_start();
+$debug = getenv('APP_DEBUG') === '1';
+error_reporting(E_ALL);
+ini_set('display_errors', $debug ? '1' : '0');
+ini_set('log_errors', '1');
+
+// sessao so e iniciada quando alguma feature realmente usar $_SESSION
+session_set_cookie_params(array(
+	'httponly' => true,
+	'samesite' => 'Lax'
+));
 
 //carregar arquivo de conf
 require 'config/config.php';
@@ -20,5 +29,12 @@ spl_autoload_register(
 	}
 );
 
-$core = new Core();
-$core->exec();
+try{
+	$core = new Core();
+	$core->exec();
+}catch(Throwable $e){
+	error_log('Erro não tratado: '.$e->getMessage());
+	http_response_code(500);
+	header('Content-Type: application/json; charset=utf-8');
+	echo json_encode(array('status' => false, 'titulo' => 'Erro interno do servidor'));
+}
